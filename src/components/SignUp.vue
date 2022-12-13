@@ -7,8 +7,9 @@
         <input type="text" placeholder="Enter Email" v-model="email" />
         <input type="password" placeholder="Enter Password" v-model="password" />
         <button @click="signUp()">Sign Up</button>
+        <router-link to="/">Login</router-link>
     </div>
-    <router-link to="/login">Login</router-link>
+    
 </template>
 
 <script setup>
@@ -17,7 +18,7 @@
 import { ref } from 'vue';
 import  axios  from 'axios';
 import router from '@/router';
-// import { onMounted } from 'vue';
+import { onMounted } from 'vue';
 
 const name = ref('')
 const email = ref('')
@@ -27,31 +28,33 @@ async function signUp() {
     
     
 
-    console.log(name.value)
+    // console.log(name.value)
     let result= await axios.post("http://localhost:3000/user",{
         name:name.value,
         email:email.value,
         password:password.value
     });
-    console.log(result)
+    // console.log(result)
     
     
     if(result.status==201){
         alert("Sign Up Done")
+        localStorage.setItem("user-info",JSON.stringify(result.data))
+         router.push({name:'home'})
     }
-    localStorage.setItem("user-info",JSON.stringify(result.data))
-    router.push({name:'home'})
+    // localStorage.setItem("user-info",JSON.stringify(result.data))
+    // router.push({name:'home'})
         
     }
  
-    // onMounted(()=>{
+    onMounted(()=>{
         
-    //     let user=localStorage.getItem('user-info');
-    //     if(user){
-    //         alert('You are allready Logged in')
-    //         router.push({name:'home'})
-    //     }
-    // })
+        let user=localStorage.getItem('user-info');
+        if(user){
+            alert('You are allready Logged in')
+            router.push({name:'home'})
+        }
+    })
 
 
 </script>

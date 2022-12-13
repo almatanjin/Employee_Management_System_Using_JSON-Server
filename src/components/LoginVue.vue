@@ -6,7 +6,7 @@
         
         <input type="text" placeholder="Enter Email" v-model="email" />
         <input type="password" placeholder="Enter Password" v-model="password" />
-        <button >Login</button>
+        <button @click="login()" >Login</button>
         <router-link to="/signUp">SignUp</router-link>
     </div>
     
@@ -15,8 +15,50 @@
 
 <script setup>
 
+import { ref } from 'vue';
+import axios from 'axios';
+import router from '@/router';
+import { onMounted } from 'vue';
+
+const email = ref('')
+const password = ref('')
+
+async function login(){
+
+ 
+    let result = await axios.get(
+        `http://localhost:3000/user?email=${email.value}&password=${password.value}`
+    )
+    if(result.status==200 && result.data.length>0){
+        alert("Logged In")
+        localStorage.setItem("user-info",JSON.stringify(result.data[0]))
+         router.push({name:'home'})
+    }
+    else
+    {
+        alert("Email and password doesn't match")
+    }
+    
+}
+    onMounted(()=>{
+        
+        let user=localStorage.getItem('user-info');
+        if(user){
+            alert('You are allready Logged in')
+            router.push({name:'home'})
+        }
+    })
+
+
+
 
 </script>
+
+
+
+
+
+
 
 <style>
 .logo {
